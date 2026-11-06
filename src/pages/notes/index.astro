@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteRow from '../../components/NoteRow.astro';
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title="笔记" description="技术、实践与建站记录。Saenai 的公开笔记。">
+  <header class="page-heading"><p class="eyebrow">FIELD NOTES / 技术与记录</p><h1>给思考，留一个落点<span>.</span></h1><p>记录做过的事、遇到的问题，以及逐渐清晰的答案。</p></header>
+  <div class="archive-label"><span class="eyebrow">ALL ENTRIES</span><span>{notes.length} 篇笔记</span></div>
+  <div class="notes-list">{notes.map(note => <NoteRow note={note} />)}</div>
+  {notes.length === 0 && <p class="empty-state">还没有公开笔记。新的记录会从这里开始。</p>}
+  <p class="archive-footnote">这本笔记刚刚翻开，内容会慢慢生长。</p>
+</BaseLayout>

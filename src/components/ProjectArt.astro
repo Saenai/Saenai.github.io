@@ -1,0 +1,21 @@
+---
+interface Props { variant: 'batch' | 'todo' | 'language' }
+const { variant } = Astro.props;
+---
+<div class:list={['project-art', `project-art--${variant}`]} aria-hidden="true">
+  {variant === 'batch' && <>
+    <div class="visual-caption">01 / PROMPT BATCH</div>
+    <div class="batch-visual"><span class="batch-input">&gt;_</span><span class="batch-connector"></span><div class="batch-outputs">{Array.from({ length: 6 }, () => <span><i></i><i></i><i></i></span>)}</div></div>
+    <div class="visual-bottom">MODEL × INPUT × REPEAT <span>↗</span></div>
+  </>}
+  {variant === 'todo' && <>
+    <div class="visual-caption">02 / SAFE WORKFLOW</div>
+    <div class="todo-visual"><span><i>✓</i><b></b></span><span><i>✓</i><b></b></span><span><i></i><b></b></span></div>
+    <div class="visual-bottom">PLAN → PREVIEW → APPLY <span>↗</span></div>
+  </>}
+  {variant === 'language' && <>
+    <div class="visual-caption">03 / LANGUAGE EXPLORATION</div>
+    <div class="language-visual"><ruby>言<rt>こと</rt></ruby><ruby>葉<rt>ば</rt></ruby><span>を、ひらく。</span></div>
+    <div class="visual-bottom">READ. UNDERSTAND. CONNECT. <span>↗</span></div>
+  </>}
+</div>

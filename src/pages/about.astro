@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IdentityArt from '../components/IdentityArt.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title="关于" description="你好，我是 Saenai。这里是我的个人主页，也是项目与笔记的集合。">
+  <header class="page-heading"><p class="eyebrow">BEHIND THE SCREEN / 关于</p><h1>你好，我是 Saenai<span>.</span></h1><p>一个用来介绍自己、展示作品，也留存思考的地方。</p></header>
+  <section class="about-intro"><IdentityArt /><div class="prose"><h2>这里是我的个人空间。</h2><p>你可以在这里找到我的公开项目，以及围绕技术和实践逐步积累的笔记。</p><p>从 AI 工具、工作流到语言学习，这些项目各自回应一个具体的问题。这里把它们串在一起，也为下一次探索留一点空间。</p><a class="button button-primary" href={site.github}>在 GitHub 找到我 <span aria-hidden="true">↗</span></a></div></section>
+  <section class="about-directions"><div class="section-heading"><div><p class="eyebrow">A FEW THREADS TO FOLLOW</p><h2>沿着这些线索，认识我<span>.</span></h2></div></div><div class="direction-grid"><a href="/projects/prompt-batch-tool/"><span class="eyebrow">01 / AI TOOLS</span><h3>让工具参与创造 ↗</h3><p>从批量 Prompt 生成开始，探索可复用的 AI 工具。</p></a><a href="/projects/microsoft-todo-safe-mcp/"><span class="eyebrow">02 / WORKFLOWS</span><h3>把流程理得更清楚 ↗</h3><p>为待办管理建立可预览、可检查的工作流。</p></a><a href="/projects/japanese-analyzer/"><span class="eyebrow">03 / LEARNING</span><h3>让理解多一种可能 ↗</h3><p>用日语句子解析工具，连接语言与技术。</p></a></div></section>
+</BaseLayout>
