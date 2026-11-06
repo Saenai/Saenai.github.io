@@ -1,0 +1,15 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectArt from '../../components/ProjectArt.astro';
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map(project => ({ params: { id: project.id }, props: { project } }));
+}
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+<BaseLayout title={project.data.title} description={project.data.description}>
+  <header class="page-heading detail-heading"><a class="back-link" href="/projects/">← 返回项目</a><p class="eyebrow">PROJECT / {project.data.category}</p><h1>{project.data.title}<span>.</span></h1><p>{project.data.description}</p><div class="detail-tags">{project.data.tags.map(tag => <span>{tag}</span>)}</div></header>
+  <div class="project-detail"><aside><ProjectArt variant={project.data.visual} /><a class="button button-primary" href={project.data.repository}>查看 GitHub 仓库 <span aria-hidden="true">↗</span></a><p class="small-note">项目介绍依据公开仓库整理。安装方法与最新进展请以仓库文档为准。</p></aside><article class="prose"><Content /></article></div>
+</BaseLayout>

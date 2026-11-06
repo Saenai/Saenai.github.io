@@ -1,0 +1,51 @@
+---
+import { site } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  article?: boolean;
+  noindex?: boolean;
+}
+const { title, description = site.description, article = false, noindex = false } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : site.title;
+const pathname = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f5f3ed" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={new URL(pathname, Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={new URL(pathname, Astro.site)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header wrap">
+      <a class="brand" href="/" aria-label="Saenai 首页"><span class="brand-symbol" aria-hidden="true">s.</span>saenai<span class="brand-dot">.</span></a>
+      <nav class="site-nav" aria-label="主导航">
+        {site.navigation.map(({ label, href }) => (
+          <a href={href} aria-current={(href === '/' ? pathname === href : pathname.startsWith(href)) ? 'page' : undefined}>{label}</a>
+        ))}
+      </nav>
+      <a class="header-github" href={site.github}>GitHub <span aria-hidden="true">↗</span></a>
+    </header>
+    <main id="main" class="wrap" tabindex="-1"><slot /></main>
+    <footer class="site-footer wrap">
+      <a class="footer-name" href="/">Saenai<span>.</span></a>
+      <p>代码、想法与日常探索。</p>
+      <div><a href={site.github}>GitHub ↗</a><a href={site.repository}>本站源码 ↗</a><span>© {new Date().getFullYear()} Saenai</span></div>
+    </footer>
+  </body>
+</html>

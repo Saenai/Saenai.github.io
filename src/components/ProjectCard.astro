@@ -1,0 +1,14 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectArt from './ProjectArt.astro';
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+---
+<article class="project-card" data-category={project.data.category}>
+  <a href={`/projects/${project.id}/`} class="project-link">
+    <ProjectArt variant={project.data.visual} />
+    <div class="project-meta"><span>{project.data.category}</span><span>{project.data.tags.join(' / ')}</span></div>
+    <h3>{project.data.title}<span aria-hidden="true">↗</span></h3>
+    <p>{project.data.description}</p>
+  </a>
+</article>

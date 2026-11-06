@@ -1,0 +1,16 @@
+{
+  "name": "saenai-personal-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.23.4" },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node --test tests/site.test.mjs"
+  },
+  "dependencies": { "astro": "7.4.7", "@astrojs/sitemap": "3.7.4" },
+  "devDependencies": { "@astrojs/check": "0.9.12", "typescript": "~5.9.3" }
+}

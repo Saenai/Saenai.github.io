@@ -1,0 +1,10 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { note: CollectionEntry<'notes'> }
+const { note } = Astro.props;
+---
+<a class="note-row" href={`/notes/${note.id}/`}>
+  <time datetime={note.data.date.toISOString()}>{note.data.date.toISOString().slice(0, 10).replaceAll('-', '.')}</time>
+  <div><span class="eyebrow note-category">{note.data.category}</span><h3>{note.data.title}</h3><p>{note.data.description}</p></div>
+  <span class="note-arrow" aria-hidden="true">↗</span>
+</a>
