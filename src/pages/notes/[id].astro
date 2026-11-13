@@ -1,13 +1,16 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizedPath, messages } from '../../i18n';
 export async function getStaticPaths() {
-  return (await getCollection('notes', ({ data }) => !data.draft)).map(note => ({ params: { id: note.id }, props: { note } }));
+  return (await getCollection('notes', ({ data }) => data.locale === 'zh-CN' && !data.draft)).map(note => ({ params: { id: note.id }, props: { note } }));
 }
 interface Props { note: CollectionEntry<'notes'> }
 const { note } = Astro.props;
+const locale = note.data.locale;
+const t = messages[locale].notes;
 const { Content } = await render(note);
 ---
-<BaseLayout title={note.data.title} description={note.data.description} article>
-  <div class="article-shell"><header class="page-heading detail-heading"><a class="back-link" href="/notes/">← 返回笔记</a><p class="eyebrow">{note.data.category} <span class="meta-separator">/</span> <time datetime={note.data.date.toISOString()}>{note.data.date.toISOString().slice(0, 10).replaceAll('-', '.')}</time></p><h1>{note.data.title}<span>.</span></h1><p>{note.data.description}</p></header><article class="prose article-body"><Content /></article><a class="article-back text-link" href="/notes/">← 查看全部笔记</a></div>
+<BaseLayout locale={locale} title={note.data.title} description={note.data.description} article>
+  <div class="article-shell"><header class="page-heading detail-heading"><a class="back-link" href={localizedPath(locale, '/notes/')}>{t.back}</a><p class="eyebrow">{note.data.category} <span class="meta-separator">/</span> <time datetime={note.data.date.toISOString()}>{note.data.date.toISOString().slice(0, 10).replaceAll('-', '.')}</time></p><h1>{note.data.title}<span>.</span></h1><p>{note.data.description}</p></header><article class="prose article-body"><Content /></article><a class="article-back text-link" href={localizedPath(locale, '/notes/')}>{t.all}</a></div>
 </BaseLayout>

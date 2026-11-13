@@ -5,5 +5,5 @@ export default defineConfig({
   site: 'https://saenai.github.io',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: page => !/\/404(?:\.html|\/)$/.test(page) })],
 });

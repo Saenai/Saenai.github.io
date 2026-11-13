@@ -1,4 +1,4 @@
-# 初版架构
+# 站点架构
 
 ## 定位与信息架构
 
@@ -13,6 +13,10 @@
 | `/notes/` | 技术笔记，按日期倒序 | notes 集合 |
 | `/notes/{id}/` | 文章阅读 | 单篇笔记 Markdown |
 | `/404.html` | GitHub Pages 自定义未找到页 | 静态页面 |
+
+简体中文保持以上路径。English、日本語、繁體中文在对应路径前添加 `/en`、`/ja`、`/zh-tw`，由 `src/pages/[locale]/[...path].astro` 在构建时生成，并复用原有页面组件。各译文的未找到页面位于 `/{locale}/404/`；GitHub Pages 对未知网址统一使用根目录的 `404.html`，访客可从页头选择语言。
+
+`src/i18n/index.ts` 集中管理界面翻译及语言路径。页头使用普通链接切换当前页面的语言，导航、卡片和返回链接保留当前语言。每页设置对应的 HTML `lang`、Open Graph locale、独立 canonical 和互相对应的 `hreflang`（默认语言为简体中文）。Sitemap 包含四种语言的公开页面，排除所有 404 页面。
 
 ## 构建路径
 
@@ -43,10 +47,11 @@ Astro 负责静态路由、Markdown、构建和内容类型。Zod 在内容载�
 ## 内容维护
 
 1. 更改名字、公共链接、导航：`src/data/site.ts`。
-2. 更改个人介绍与首页文案：`src/pages/about.astro`、`src/pages/index.astro`。
+2. 更改个人介绍与首页文案：`src/i18n/index.ts`；页面结构仍在 `src/pages/about.astro`、`src/pages/index.astro`。
 3. 新增项目：在 `src/content/projects/` 添加 Markdown，参考现有字段。`order` 控制顺序，`featured` 控制首页推荐。新增类别或封面类型时同步扩展 `content.config.ts` 和 `ProjectArt.astro`。
 4. 新增文章：在 `src/content/notes/` 添加 Markdown，包含 `title`、`description`、`date`、`category`，可设置 `draft: true`。
 5. Markdown 文件名就是 URL 的最后一段；发表后改名会改变链接。
+6. 新增内容时，为 English、日本語、繁體中文分别在集合的 `en/`、`ja/`、`zh-tw/` 子目录添加同名 Markdown，并设置 `locale: en`、`locale: ja`、`locale: zh-TW`。简体中文省略 `locale` 时默认为 `zh-CN`。标题、摘要、类别和正文均独立翻译；日期、项目仓库、排序与推荐标记应与原文保持一致。内容查询按语言筛选，译文不会混入其他语言列表。
 
 ## 初版内容边界
 
@@ -60,7 +65,7 @@ Astro 负责静态路由、Markdown、构建和内容类型。Zod 在内容载�
 
 ## 验证与发布
 
-`npm run check` 验证 Astro/TypeScript 与内容类型；`npm run build` 生成静态页面；`npm test` 检查核心路由以及全部生成页面的元数据、内部链接、资源与 sitemap。新增内容自动纳入产物检查。
+`npm run check` 验证 Astro/TypeScript 与内容类型；`npm run build` 生成静态页面；`npm test` 检查四种语言的路由、页面语言与元数据、同页语言切换、全文译文、内部链接、资源与 sitemap。新增内容自动纳入产物检查。
 
 PR 运行构建检查。默认分支 `master` 检查成功后，上传 `dist` 并部署到 GitHub Pages。首次发布需要在仓库 Settings → Pages → Build and deployment 中把 Source 设为 **GitHub Actions**。配置依据 [Astro GitHub Pages 文档](https://docs.astro.build/en/guides/deploy/github/)，内容集合依据 [Astro 内容集合文档](https://docs.astro.build/en/guides/content-collections/)。
 

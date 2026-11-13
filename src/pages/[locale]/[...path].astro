@@ -1,0 +1,46 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import { getProjects, getNotes } from '../../data/content';
+import { languages, locales } from '../../i18n';
+import Home from '../index.astro';
+import About from '../about.astro';
+import Projects from '../projects/index.astro';
+import Project from '../projects/[id].astro';
+import Notes from '../notes/index.astro';
+import Note from '../notes/[id].astro';
+import NotFound from '../404.astro';
+
+export const getStaticPaths = (async () => {
+  const pages = [
+    { path: undefined, page: 'home' },
+    { path: 'about', page: 'about' },
+    { path: 'projects', page: 'projects' },
+    { path: 'notes', page: 'notes' },
+    { path: '404', page: 'notFound' },
+  ] as const;
+  return (await Promise.all(languages.filter(locale => locale !== 'zh-CN').map(async locale => {
+    const params = { locale: locales[locale].prefix.slice(1) };
+    return [
+      ...pages.map(({ path, page }) => ({ params: { ...params, path }, props: { locale, page } })),
+      ...(await getProjects(locale)).map(project => ({
+        params: { ...params, path: `projects/${project.id.split('/').at(-1)}` },
+        props: { locale, page: 'project' as const, project },
+      })),
+      ...(await getNotes(locale)).map(note => ({
+        params: { ...params, path: `notes/${note.id.split('/').at(-1)}` },
+        props: { locale, page: 'note' as const, note },
+      })),
+    ];
+  }))).flat();
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const props = Astro.props;
+---
+{props.page === 'home' && <Home locale={props.locale} />}
+{props.page === 'about' && <About locale={props.locale} />}
+{props.page === 'projects' && <Projects locale={props.locale} />}
+{props.page === 'notes' && <Notes locale={props.locale} />}
+{props.page === 'notFound' && <NotFound locale={props.locale} />}
+{props.page === 'project' && <Project project={props.project} />}
+{props.page === 'note' && <Note note={props.note} />}

@@ -1,4 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { localizedPath, messages, type Locale } from '../i18n';
+interface Props { locale?: Locale }
+const { locale = 'zh-CN' } = Astro.props;
+const t = messages[locale].notFound;
 ---
-<BaseLayout title="页面未找到" noindex><section class="not-found"><p class="eyebrow">A SMALL DETOUR</p><span class="error-number">404<span>.</span></span><h1>这条路，还没有铺好。</h1><p>页面可能已经移动，或者地址有一点小偏差。</p><a class="button button-primary" href="/">回到首页 <span aria-hidden="true">↗</span></a></section></BaseLayout>
+<BaseLayout locale={locale} title={t.title} noindex><section class="not-found"><p class="eyebrow">A SMALL DETOUR</p><span class="error-number">404<span>.</span></span><h1>{t.heading}</h1><p>{t.description}</p><a class="button button-primary" href={localizedPath(locale, '/')}>{t.home} <span aria-hidden="true">↗</span></a></section></BaseLayout>

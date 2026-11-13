@@ -1,15 +1,19 @@
 ---
-import { getCollection } from 'astro:content';
+import { getProjects } from '../../data/content';
+import { messages, type Locale } from '../../i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+interface Props { locale?: Locale }
+const { locale = 'zh-CN' } = Astro.props;
+const t = messages[locale].projects;
+const projects = await getProjects(locale);
 const categories = [...new Set(projects.map(project => project.data.category))];
 ---
-<BaseLayout title="项目" description="Saenai 的公开项目：AI 工具、工作流与语言学习。">
-  <header class="page-heading"><p class="eyebrow">THE WORKBENCH / 项目档案</p><h1>从想法，到可用的工具<span>.</span></h1><p>把零散的探索整理在这里。每一个项目，都是一次具体的尝试。</p></header>
-  <div class="project-toolbar"><div class="project-filters" role="group" aria-label="按项目类别筛选" hidden><button type="button" data-filter="all" aria-pressed="true">全部</button>{categories.map(category => <button type="button" data-filter={category} aria-pressed="false">{category}</button>)}</div><p class="result-count" role="status" aria-live="polite">{projects.length} 个项目</p></div>
+<BaseLayout locale={locale} title={t.title} description={t.description}>
+  <header class="page-heading"><p class="eyebrow">THE WORKBENCH / {t.eyebrow}</p><h1>{t.heading}<span>.</span></h1><p>{t.intro}</p></header>
+  <div class="project-toolbar"><div class="project-filters" role="group" aria-label={t.filter} hidden><button type="button" data-filter="all" aria-pressed="true">{t.all}</button>{categories.map(category => <button type="button" data-filter={category} aria-pressed="false">{category}</button>)}</div><p class="result-count" role="status" aria-live="polite" data-template={t.count}>{t.count.replace('{count}', String(projects.length))}</p></div>
   <div class="project-grid project-grid--archive">{projects.map(project => <ProjectCard project={project} />)}</div>
-  <p class="archive-footnote">更多代码与实验，收录在 <a href="https://github.com/Saenai?tab=repositories">GitHub 仓库 ↗</a></p>
+  <p class="archive-footnote">{t.more} <a href="https://github.com/Saenai?tab=repositories">{t.repositories} ↗</a></p>
 </BaseLayout>
 <script>
   const filters = document.querySelector<HTMLElement>('.project-filters')!;
@@ -24,6 +28,6 @@ const categories = [...new Set(projects.map(project => project.data.category))];
       card.hidden = button.dataset.filter !== 'all' && card.dataset.category !== button.dataset.filter;
       if (!card.hidden) visible++;
     });
-    count.textContent = `${visible} 个项目`;
+    count.textContent = count.dataset.template!.replace('{count}', String(visible));
   }));
 </script>
